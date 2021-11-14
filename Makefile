@@ -6,14 +6,15 @@
 #    By: bccyv <bccyv@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/14 17:59:02 by bccyv             #+#    #+#              #
-#    Updated: 2021/11/14 18:02:55 by bccyv            ###   ########.fr        #
+#    Updated: 2021/11/14 19:09:44 by bccyv            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # ****************
 #	Variables:
 
-NAME	=	durex
+NAME	=	Durex
+BPATH	=	/tmp/
 
 SRCDIR	=	src
 INCDIR	=	inc
@@ -43,7 +44,7 @@ $(NAME): $(OBJS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(OBJDIR)
-	@$(CC) $(CFLAGS) -MMD -I $(INCDIR) -c $< -o $@
+	@$(CC) $(CFLAGS) -MMD -I $(INCDIR) -c $< -o $@ -DBPATH=\"$(BPATH)\" -DNAME=\"$(NAME)\"
 	@printf "[\e[32mCC\e[0m] %s\n" $@
 
 clean: _clean
