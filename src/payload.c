@@ -6,7 +6,7 @@
 /*   By: bccyv <bccyv@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/15 19:41:10 by bccyv             #+#    #+#             */
-/*   Updated: 2021/11/15 23:46:41 by bccyv            ###   ########.fr       */
+/*   Updated: 2021/11/15 23:59:32 by bccyv            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,9 +140,14 @@ int serve(int sockfd)
 			{
 				int confd = read_from_client(&clients[i]);
 				if (confd > 0)
+				{
 					FD_CLR(confd, &rset);
+					FD_CLR(confd, &wset);
+				}
 				else
+				{
 					clients[i].is_typing = 0;
+				}
 			}
 		}
 	}
