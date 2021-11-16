@@ -6,7 +6,7 @@
 #    By: bccyv <bccyv@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/14 17:59:02 by bccyv             #+#    #+#              #
-#    Updated: 2021/11/15 19:49:39 by bccyv            ###   ########.fr        #
+#    Updated: 2021/11/16 18:36:02 by bccyv            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,9 +20,9 @@ SRCDIR	=	src
 INCDIR	=	inc
 OBJDIR	=	obj
 
-SRCS	=	main.c			\
+SRCS	=	server.c		\
+			bcrypt.c		\
 			daemonize.c		\
-			payload.c		\
 
 CC		=	gcc
 CFLAGS	=	-Wall -Wextra -Werror

