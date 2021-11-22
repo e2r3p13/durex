@@ -6,7 +6,7 @@
 #    By: bccyv <bccyv@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/14 17:59:02 by bccyv             #+#    #+#              #
-#    Updated: 2021/11/16 18:36:02 by bccyv            ###   ########.fr        #
+#    Updated: 2021/11/17 17:28:47 by bccyv            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,6 @@ INCDIR	=	inc
 OBJDIR	=	obj
 
 SRCS	=	server.c		\
-			bcrypt.c		\
 			daemonize.c		\
 
 CC		=	gcc
