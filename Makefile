@@ -38,14 +38,14 @@ DPDCTT	=	$(shell ls $(OBJDIR)/*.d)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -lcrypt
 	@printf "[\e[32mOK\e[0m] %s\n" $@
 
 -include $(DPDCS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(OBJDIR)
-	@$(CC) $(CFLAGS) -MMD -I $(INCDIR) -c $< -o $@ -DBPATH=\"$(BPATH)\" -DNAME=\"$(NAME)\"
+	@$(CC) $(CFLAGS) -MMD -I $(INCDIR) -c $< -o $@ -lcrypt -DBPATH=\"$(BPATH)\" -DNAME=\"$(NAME)\"
 	@printf "[\e[32mCC\e[0m] %s\n" $@
 
 clean: _clean
