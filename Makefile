@@ -6,7 +6,7 @@
 #    By: bccyv <bccyv@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/14 17:59:02 by bccyv             #+#    #+#              #
-#    Updated: 2021/11/17 17:28:47 by bccyv            ###   ########.fr        #
+#    Updated: 2021/11/24 19:59:48 by bccyv            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,14 +38,14 @@ DPDCTT	=	$(shell ls $(OBJDIR)/*.d)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -lcrypt
+	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 	@printf "[\e[32mOK\e[0m] %s\n" $@
 
 -include $(DPDCS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(OBJDIR)
-	@$(CC) $(CFLAGS) -MMD -I $(INCDIR) -c $< -o $@ -lcrypt -DBPATH=\"$(BPATH)\" -DNAME=\"$(NAME)\"
+	@$(CC) $(CFLAGS) -MMD -I $(INCDIR) -c $< -o $@ -DBPATH=\"$(BPATH)\" -DNAME=\"$(NAME)\"
 	@printf "[\e[32mCC\e[0m] %s\n" $@
 
 clean: _clean
