@@ -21,7 +21,7 @@
 #include <sys/wait.h>
 
 #define MAX_CLI_NUMBER 3
-#define PORT 8080
+#define PORT 4242
 #define BUF_SIZE 32
 #define PASSWORD_HASH "42ObwopjuwAYY"
 #define SALT "42"
@@ -254,10 +254,11 @@ int sock_init(int port)
 	return (sockfd);
 }
 
-void sigchld_handler(__unused int sig)
+void sigchld_handler(int sig)
 {
 	int pid;
 
+	(void)sig;
 	pid = wait(NULL);
 	for (int i = 0; i < MAX_CLI_NUMBER; i++)
 	{
