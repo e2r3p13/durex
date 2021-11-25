@@ -26,6 +26,10 @@ SRCS	=	server.c		\
 CC		=	gcc
 CFLAGS	=	-Wall -Wextra -Werror
 
+ifeq ($(shell uname), Linux)
+	LIBS = -lcrypt
+endif
+
 OBJS	=	$(addprefix $(OBJDIR)/,$(SRCS:.c=.o))
 DPDCS	=	$(OBJS:.o=.d)
 
@@ -38,14 +42,14 @@ DPDCTT	=	$(shell ls $(OBJDIR)/*.d)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
 	@printf "[\e[32mOK\e[0m] %s\n" $@
 
 -include $(DPDCS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(OBJDIR)
-	@$(CC) $(CFLAGS) -MMD -I $(INCDIR) -c $< -o $@ -DBPATH=\"$(BPATH)\" -DNAME=\"$(NAME)\"
+	@$(CC) $(CFLAGS) -MMD -I $(INCDIR) -c $< $(LIBS) -o $@ -DBPATH=\"$(BPATH)\" -DNAME=\"$(NAME)\"
 	@printf "[\e[32mCC\e[0m] %s\n" $@
 
 clean: _clean
