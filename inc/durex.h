@@ -1,6 +1,10 @@
 #ifndef DUREX_H
 #define DUREX_H
 
+#include <stdarg.h>
+
+#define AT() printf("at: %s l.%d\n", __FILE__, __LINE__)
+
 typedef struct
 {
 	int confd;
@@ -10,5 +14,7 @@ typedef struct
 
 int	payload(void);
 int	daemonize(void);
+
+void	debug(const char *fmt, ...);
 
 #endif
