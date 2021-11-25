@@ -243,7 +243,7 @@ int sock_init(int port)
 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	addr.sin_port = htons(port);
 
-	if (bind(sockfd, (struct sockaddr *)&addr, sizeof addr) < 0 || listen(sockfd, FD_SETSIZE) < 0)
+	if (bind(sockfd, (struct sockaddr *)&addr, sizeof addr) < 0 || listen(sockfd, 128) < 0)
 	{
 		close(sockfd);
 		return (-1);
