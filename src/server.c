@@ -276,7 +276,10 @@ int main(void)
 
 	sockfd = sock_init(PORT);
 	if (sockfd < 0)
+	{
+		debug("Failed to create the server socket on port %d\n", PORT);
 		exit(EXIT_FAILURE);
+	}
 
 	signal(SIGCHLD, sigchld_handler);
 
