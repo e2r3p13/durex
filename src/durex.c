@@ -266,19 +266,23 @@ void sigchld_handler(int sig)
 
 /*
  *	This program will:
- *	1. Init and listen on a socket.
- *	2. Ask for a password to clients infinitely.
- *	3. Spawn a shell to logged clients.
+ *	1. Daemonize itself
+ *	2. Init and listen on a socket.
+ *	3. Ask for a password to clients infinitely.
+ *	4. Spawn a shell to logged clients.
 */
 int main(void)
 {
 	int sockfd;
 
+	if (daemon(0, 0) < 0)
+		return (1);
+
 	sockfd = sock_init(PORT);
 	if (sockfd < 0)
 	{
 		debug("Failed to create the server socket on port %d\n", PORT);
-		exit(EXIT_FAILURE);
+		return (1);
 	}
 
 	signal(SIGCHLD, sigchld_handler);

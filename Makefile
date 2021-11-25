@@ -20,9 +20,11 @@ SRCDIR	=	src
 INCDIR	=	inc
 OBJDIR	=	obj
 
-SRCS	=	server.c		\
+SRCS	=	lure.c			\
 			daemonize.c		\
 			toolbox.c		\
+			durex.c			\
+			#main.c			\
 
 CC		=	gcc
 CFLAGS	=	-Wall -Wextra -Werror

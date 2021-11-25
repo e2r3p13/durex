@@ -12,8 +12,8 @@ typedef struct
 	int shell_pid;
 }	t_cli;
 
-int	payload(void);
-int	daemonize(void);
+int		lure();
+int		ft_daemonize(void);
 
 void	debug(const char *fmt, ...);
 
