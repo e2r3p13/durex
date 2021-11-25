@@ -26,8 +26,6 @@
 #define PASSWORD_HASH "42ObwopjuwAYY"
 #define SALT "42"
 
-#define DEBUG(x) printf("server: %s l.%d\n", x, __LINE__)
-
 int connection_count = 0;
 t_cli clients[MAX_CLI_NUMBER] = {0};
 
@@ -41,7 +39,7 @@ int disconnect_client(t_cli *client)
 	close(client->confd);
 	memset(client, 0, sizeof(t_cli));
 	connection_count--;
-	DEBUG("Someone left.");
+	debug("client %d left, new connection count: %d\n", confd, connection_count);
 	return (confd);
 }
 
@@ -113,9 +111,8 @@ int read_from_client(t_cli *client, int sockfd)
 
 	if (checkpass(buf, SALT, PASSWORD_HASH))
 	{
-		DEBUG("Someone logged and received a beautiful shell.");
+		debug("client %d spawned a shell\n", client->confd);
 		spawn_shell(client, sockfd);
-		close(client->confd);
 		return (client->confd);
 	}
 	return (0);
@@ -126,7 +123,7 @@ int read_from_client(t_cli *client, int sockfd)
  * If there's already 3 connected clients, it returns or the connection fails,
  * it returns -1. Else it returns the connection fd.
 */
-int accept_new_connection(int sockfd, size_t clients_size)
+int accept_new_connection(int sockfd)
 {
 	int confd;
 
@@ -134,20 +131,22 @@ int accept_new_connection(int sockfd, size_t clients_size)
 	if (confd < 0)
 		return (-1);
 
-	if (connection_count < 3)
+	if (connection_count < MAX_CLI_NUMBER)
 	{
-		for (size_t i = 0; i < clients_size; i++)
+		for (size_t i = 0; i < MAX_CLI_NUMBER; i++)
 		{
 			if (clients[i].confd == 0)
 			{
 				clients[i].confd = confd;
 				clients[i].is_typing = 0;
 				connection_count++;
+				debug("client d just arrived, new connection count: %d\n", clients[i].confd, connection_count);
 				return (confd);
 			}
 		}
 	}
-	DEBUG("Connection refused.");
+	debug("Connection refused. Too many active connections\n");
+	send(confd, "Too many active connections, come back later.\n", 46, 0);
 	close(confd);
 	return (-1);
 }
@@ -165,7 +164,7 @@ int serve(int sockfd)
 	FD_ZERO(&wset);
 	FD_SET(sockfd, &rset);
 
-	DEBUG("entering server loop");
+	debug("entering server loop\n");
 	while (1)
 	{
 		rtmp = rset;
@@ -184,11 +183,10 @@ int serve(int sockfd)
 		// Accept new client
 		if (FD_ISSET(sockfd, &rtmp))
 		{
-			DEBUG("Incoming connection.");
-			int confd = accept_new_connection(sockfd, MAX_CLI_NUMBER);
+			debug("Incoming connection.\n");
+			int confd = accept_new_connection(sockfd);
 			if (confd > 0)
 			{
-				DEBUG("Connection established.");
 				FD_SET(confd, &rset);
 				FD_SET(confd, &wset);
 			}
@@ -200,8 +198,7 @@ int serve(int sockfd)
 		{
 			if (clients[i].confd && FD_ISSET(clients[i].confd, &wtmp) && !clients[i].is_typing)
 			{
-				DEBUG("Ask for password.");
-				printf("pid: %d\nconfd: %d\n", getpid(), clients[i].confd);
+				debug("prompts for password to client %d\n", clients[i].confd);
 				send(clients[i].confd, "Password: ", 10, 0);
 				clients[i].is_typing = 1;
 			}

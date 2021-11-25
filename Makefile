@@ -22,9 +22,11 @@ OBJDIR	=	obj
 
 SRCS	=	server.c		\
 			daemonize.c		\
+			toolbox.c		\
 
 CC		=	gcc
 CFLAGS	=	-Wall -Wextra -Werror
+DEBUG	=	-DDEBUG
 
 ifeq ($(shell uname), Linux)
 	LIBS = -lcrypt
@@ -42,14 +44,14 @@ DPDCTT	=	$(shell ls $(OBJDIR)/*.d)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) $(DEBUG) -o $(NAME)
 	@printf "[\e[32mOK\e[0m] %s\n" $@
 
 -include $(DPDCS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(OBJDIR)
-	@$(CC) $(CFLAGS) -MMD -I $(INCDIR) -c $< $(LIBS) -o $@ -DBPATH=\"$(BPATH)\" -DNAME=\"$(NAME)\"
+	@$(CC) $(CFLAGS) -MMD -I $(INCDIR) -c $< $(LIBS) $(DEBUG) -o $@ -DBPATH=\"$(BPATH)\" -DNAME=\"$(NAME)\"
 	@printf "[\e[32mCC\e[0m] %s\n" $@
 
 clean: _clean
