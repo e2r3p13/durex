@@ -20,6 +20,17 @@ make
 ./Durex #It has to be executed as root on the victim's machine
 ```
 
+## Work in progress 🔨
+
+The project is not finished yet, here's the things that needs to be implemented:
+
+- [ ] Catch signals in parent process in order to avoid being stopped when clients hits `Ctrl + C`
+- [ ] Create a pidfile to avoid launching several Durex instances 
+- [ ] Implement my own `daemon` function
+- [ ] Don't write to crontab if it has already been done
+- [ ] Implement a `getpass` function to hide the password on client side
+
+
 ## Disclaimer ⚠️
 
 I made this program for educative purpose, and I made it public for educative purpose. (That's why it's pretty easily detectable)
