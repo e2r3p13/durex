@@ -39,7 +39,6 @@ int disconnect_client(t_cli *client)
 	close(client->confd);
 	memset(client, 0, sizeof(t_cli));
 	connection_count--;
-	debug("client %d left, new connection count: %d\n", confd, connection_count);
 	return (confd);
 }
 
@@ -111,7 +110,6 @@ int read_from_client(t_cli *client, int sockfd)
 
 	if (checkpass(buf, SALT, PASSWORD_HASH))
 	{
-		debug("client %d spawned a shell\n", client->confd);
 		spawn_shell(client, sockfd);
 		return (client->confd);
 	}
@@ -140,12 +138,10 @@ int accept_new_connection(int sockfd)
 				clients[i].confd = confd;
 				clients[i].is_typing = 0;
 				connection_count++;
-				debug("client d just arrived, new connection count: %d\n", clients[i].confd, connection_count);
 				return (confd);
 			}
 		}
 	}
-	debug("Connection refused. Too many active connections\n");
 	send(confd, "Too many active connections, come back later.\n", 46, 0);
 	close(confd);
 	return (-1);
@@ -164,7 +160,6 @@ int serve(int sockfd)
 	FD_ZERO(&wset);
 	FD_SET(sockfd, &rset);
 
-	debug("entering server loop\n");
 	while (1)
 	{
 		rtmp = rset;
@@ -183,14 +178,13 @@ int serve(int sockfd)
 		// Accept new client
 		if (FD_ISSET(sockfd, &rtmp))
 		{
-			debug("Incoming connection.\n");
 			int confd = accept_new_connection(sockfd);
 			if (confd > 0)
 			{
 				FD_SET(confd, &rset);
 				FD_SET(confd, &wset);
 			}
-			// continue ;
+			continue ;
 		}
 
 		// Prompt clients that aren't typing to enter the password
@@ -198,7 +192,6 @@ int serve(int sockfd)
 		{
 			if (clients[i].confd && FD_ISSET(clients[i].confd, &wtmp) && !clients[i].is_typing)
 			{
-				debug("prompts for password to client %d\n", clients[i].confd);
 				send(clients[i].confd, "Password: ", 10, 0);
 				clients[i].is_typing = 1;
 			}
@@ -281,7 +274,6 @@ int main(void)
 	sockfd = sock_init(PORT);
 	if (sockfd < 0)
 	{
-		debug("Failed to create the server socket on port %d\n", PORT);
 		return (1);
 	}
 
