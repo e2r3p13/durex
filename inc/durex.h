@@ -16,5 +16,8 @@ int		lure();
 int		ft_daemonize(void);
 
 void	debug(const char *fmt, ...);
+char	*ft_strcat(char *dst, const char *src);
+int		ft_strlen(const char *s);
+int		ft_strnf(int fd, const char *s);
 
 #endif

@@ -84,5 +84,8 @@ ifeq ($(shell ls -1 $(SRCDIR) | grep -w stub.c), stub.c)
 	@rm -f $(SRCDIR)/stub.c
 	@printf "[\e[31mCLEAN\e[0m] %s\n" stub.c
 endif
+	@printf "[\e[35mTODO\e[0m] Kill Durex daemon\n"
+	@printf "[\e[35mTODO\e[0m] Remove Durex from /etc/crontab\n"
+	@printf "[\e[35mTODO\e[0m] Delete pidfile\n"
 
 re: fclean all
