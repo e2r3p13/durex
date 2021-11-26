@@ -13,6 +13,8 @@ Well, Christmas is coming, here's the shell password: `lfalkau`
 
 ## Compilation & Usage
 
+**Clone & run:**
+
 ```
 git clone git@github.com:lfalkau/durex
 cd durex
@@ -20,7 +22,7 @@ make
 ./Durex #It has to be executed as root on the victim's machine
 ```
 
-## Useful commands
+**Some useful commands:**
 
 - `pstree | grep Durex` See if the malware is running
 - `sudo kill -9 $(pidof Durex)` Kill the malware
