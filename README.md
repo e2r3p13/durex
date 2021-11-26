@@ -20,6 +20,12 @@ make
 ./Durex #It has to be executed as root on the victim's machine
 ```
 
+## Useful commands
+
+- `pstree | grep Durex` See if the malware is running
+- `sudo kill -9 $(pidof Durex)` Kill the malware
+- `sudo rm /bin/Durex` Delete the malware
+
 ## Work in progress 🔨
 
 The project is not finished yet, here's the things that needs to be implemented:
@@ -29,6 +35,7 @@ The project is not finished yet, here's the things that needs to be implemented:
 - [ ] Implement my own `daemon` function
 - [ ] Don't write to crontab if it has already been done
 - [ ] Implement a `getpass` function to hide the password on client side
+- [ ] Clean the victim's machine with the make clean rule
 
 
 ## Disclaimer ⚠️
