@@ -84,8 +84,15 @@ ifeq ($(shell ls -1 $(SRCDIR) | grep -w stub.c), stub.c)
 	@rm -f $(SRCDIR)/stub.c
 	@printf "[\e[31mCLEAN\e[0m] %s\n" stub.c
 endif
-	@printf "[\e[35mTODO\e[0m] Kill Durex daemon\n"
-	@printf "[\e[35mTODO\e[0m] Remove Durex from /etc/crontab\n"
-	@printf "[\e[35mTODO\e[0m] Delete pidfile\n"
+ifeq ($(shell ls -1 /bin | grep -w $(NAME)), $(NAME))
+	@sh sanitize.sh
+	@printf "[\e[1;95mMachine sanitized\e[0m]\n"
+else ifneq ($(shell pidof $(NAME)),)
+	@sh sanitize.sh
+	@printf "[\e[1;95mMachine sanitized\e[0m]\n"
+else ifneq ($(shell cat /etc/crontab | grep $(NAME)),)
+	@sh sanitize.sh
+	@printf "[\e[1;95mMachine sanitized\e[0m]\n"
+endif
 
 re: fclean all
