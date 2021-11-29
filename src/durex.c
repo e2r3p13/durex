@@ -101,7 +101,7 @@ int read_from_client(t_cli *client, int sockfd)
 	msg_len = recv(client->confd, buf, BUF_SIZE, 0);
 
 	// Client has closed his side of the socket.
-	if (msg_len == 0 || buf[msg_len - 1] != '\n')
+	if (msg_len <= 0 || buf[msg_len - 1] != '\n')
 	{
 		return (disconnect_client(client));
 	}
@@ -205,8 +205,8 @@ int serve(int sockfd)
 				int confd = read_from_client(&clients[i], sockfd);
 				if (confd > 0)
 				{
-					FD_CLR(clients[i].confd, &rset);
-					FD_CLR(clients[i].confd, &wset);
+					FD_CLR(confd, &rset);
+					FD_CLR(confd, &wset);
 				}
 				else
 				{
