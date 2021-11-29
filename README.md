@@ -32,12 +32,11 @@ make
 
 The project is not finished yet, here's the things that needs to be implemented:
 
-- [ ] Catch signals in parent process in order to avoid being stopped when clients hits `Ctrl + C`
 - [ ] Create a pidfile to avoid launching several Durex instances 
 - [ ] Implement my own `daemon` function
 - [x] Don't write to crontab if it has already been done
 - [ ] Implement a `getpass` function to hide the password on client side
-- [ ] Clean the victim's machine with the make clean rule
+- [x] Clean the victim's machine with the make clean rule
 
 
 ## Disclaimer ⚠️
