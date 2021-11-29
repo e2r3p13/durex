@@ -21,7 +21,6 @@ INCDIR	=	inc
 OBJDIR	=	obj
 
 SRCS	=	lure.c			\
-			daemonize.c		\
 			toolbox.c		\
 			main.c			\
 			stub.c			\
