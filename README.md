@@ -11,7 +11,7 @@ The payload will open a TCP connection on the port 4242 of the infected machine.
 
 Well, Christmas is coming, here's the shell password: `lfalkau`
 
-## Compilation & Usage
+## Compilation & Usage (Linux only)
 
 **Clone & run:**
 
