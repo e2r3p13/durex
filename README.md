@@ -22,11 +22,7 @@ make
 sudo ./Durex #It has to be executed as root on the victim's machine
 ```
 
-**Some useful commands:**
-
-- `pstree | grep Durex` See if the malware is running
-- `sudo kill -9 $(pidof Durex)` Kill the malware
-- `sudo rm /bin/Durex` Delete the malware
+To sanitize the infected machine, just run `make clean` from the repo.
 
 ## Disclaimer ⚠️
 
