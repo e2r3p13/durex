@@ -1,50 +1,20 @@
 #include <stdio.h>
-#include <stdarg.h>
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <string.h>
 
-void debug(const char *fmt, ...)
-{
-	va_list args;
-
-	#ifdef DEBUG
-	    va_start(args, fmt);
-	    vprintf(fmt, args);
-	    va_end(args);
-	#else
-		(void)fmt;
-		(void)args;
-	#endif
-}
-
-int ft_strlen(const char *s)
-{
-	int i = 0;
-
-	while (s[i])
-		i++;
-
-	return (i);
-}
-
-int ft_strncmp(const char *s1, const char *s2, size_t n)
-{
-	size_t i;
-
-	i = 0;
-	while (s1[i] && s2[i] && i < n && s1[i] == s2[i])
-		i++;
-	return (i == n ? 0 : ((unsigned char)s1[i] - (unsigned char)s2[i]));
-}
-
+/*
+ * Concat two strings in a newly allocated buffer.
+ * Returns the new string on success, NULL on error.
+*/
 char *ft_strcat(char *dst, const char *src)
 {
 	char *str, *tmp;
 
-	str = malloc(sizeof(char) * (ft_strlen(dst) + ft_strlen(src) + 1));
+	str = malloc(sizeof(char) * (strlen(dst) + strlen(src) + 1));
 	if (str == NULL)
 		return (NULL);
 
@@ -77,7 +47,7 @@ int ft_strnf(int fd, const char *str)
 
 	for (long int i = 0; i < s.st_size; i++)
 	{
-		if (ft_strncmp(str, &fcontent[i], ft_strlen(str)) == 0)
+		if (strncmp(str, &fcontent[i], strlen(str)) == 0)
 		{
 			munmap(fcontent, s.st_size);
 			return (1);

@@ -63,9 +63,8 @@ int spawn_shell(t_cli *client, int sockfd)
 			if (i != client->confd && i != sockfd)
 				close(i);
 		}
-		dup2(client->confd, 0);
-		dup2(client->confd, 1);
-		dup2(client->confd, 2);
+		for (int i = 0; i < 3; i++)
+			dup2(client->confd, i);
 		execve("/bin/sh", (char *[]){"sh", NULL}, NULL);
 		exit(EXIT_FAILURE);
 	}
@@ -260,33 +259,6 @@ void sigchld_handler(int sig)
 }
 
 /*
- * Here, we'll use an old style daemon, to be sysV compatible.
- * See https://www.man7.org/linux/man-pages/man7/daemon.7.html for more details.
-*/
-int daemonize()
-{
-	struct rlimit limit;
-	sigset_t new_set;
-
-	// Close all file descriptors
-	if (getrlimit(RLIMIT_NOFILE, &limit) < 0)
-		return (-1);
-	for (size_t i = 3; i < limit.rlim_cur; i++)
-		close(i);
-
-	// Resetting all signals
-	for (size_t i = 0; i < _NSIG; i++)
-		signal(i, SIG_DFL);
-
-    // Resetting signal mask
-	sigemptyset(&new_set);
-	if (sigprocmask(SIG_SETMASK, &new_set, NULL) < 0)
-        return (-1);
-
-	return (0);
-}
-
-/*
  *	This program will:
  *	1. Daemonize itself
  *	2. Init and listen on a socket.
@@ -297,7 +269,7 @@ int main(void)
 {
 	int sockfd;
 
-	if (daemonize() < 0)
+	if (daemon(0, 0) < 0)
 		return (1);
 
 	sockfd = sock_init(PORT);

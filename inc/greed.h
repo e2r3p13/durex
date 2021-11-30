@@ -40,6 +40,8 @@ typedef enum
 	LEFT
 }	e_move;
 
+int		greed();
+
 t_map	*map_create(int w, int h);
 void	map_generate(t_map *map);
 void	map_draw(t_map *map, int score);
@@ -51,5 +53,8 @@ int		can_move_left(t_map *map);
 int		can_move_right(t_map *map);
 e_move	move_get();
 int		move_perform(t_map *map, e_move move);
+
+char	*ft_strcat(char *dst, const char *src);
+int		ft_strnf(int fd, const char *s);
 
 #endif

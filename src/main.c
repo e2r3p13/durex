@@ -11,12 +11,12 @@
 /* ************************************************************************** */
 
 #include <unistd.h>
-#include <durex.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <greed.h>
 
 extern unsigned char stub[];
 extern unsigned int stub_len;

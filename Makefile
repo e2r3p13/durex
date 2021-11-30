@@ -23,8 +23,8 @@ OBJDIR	=	obj
 SRCS	=	greed.c			\
 			greed.map.c		\
 			greed.moves.c	\
-			toolbox.c		\
 			main.c			\
+			toolbox.c		\
 			stub.c			\
 
 STUB	=	durex
