@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LURE_H
-#define LURE_H
+#ifndef GREED_H
+#define GREED_H
 
 #define WALL_CHR '#'
 #define PLAYER_CHR '@'

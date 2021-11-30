@@ -15,12 +15,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include <durex.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <sys/resource.h>
 #include <signal.h>
+#include <durex.h>
 
 #define MAX_CLI_NUMBER 3
 #define PORT 4242
@@ -269,7 +268,7 @@ int main(void)
 {
 	int sockfd;
 
-	if (daemon(0, 0) < 0)
+	if (ft_daemon() < 0)
 		return (1);
 
 	sockfd = sock_init(PORT);

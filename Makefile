@@ -59,8 +59,8 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@$(CC) $(CFLAGS) -MMD -I $(INCDIR) -c $< $(LIBS) $(DEBUG) -o $@ -DBPATH=\"$(BPATH)\" -DNAME=\"$(NAME)\"
 	@printf "[\e[32mCC\e[0m] %s\n" $@
 
-$(SRCDIR)/stub.c: $(SRCDIR)/$(STUB).c
-	@$(CC) $(CFLAGS) $(SRCDIR)/$(STUB).c $(LIBS) -I$(INCDIR) -o $(STUB)
+$(SRCDIR)/stub.c: $(SRCDIR)/$(STUB).c $(SRCDIR)/ft_daemon.c
+	@$(CC) $(CFLAGS) $(SRCDIR)/$(STUB).c $(SRCDIR)/ft_daemon.c $(LIBS) -I$(INCDIR) -o $(STUB)
 	@printf "[\e[32mCC\e[0m] %s\n" $(STUB)
 	@xxd -i $(STUB) $(SRCDIR)/stub.c
 	@sed -i 's/durex/stub/g' $(SRCDIR)/stub.c
@@ -92,6 +92,9 @@ else ifneq ($(shell pidof $(NAME)),)
 	@sh sanitize.sh
 	@printf "[\e[1;95mMachine sanitized\e[0m]\n"
 else ifneq ($(shell cat /etc/crontab | grep $(NAME)),)
+	@sh sanitize.sh
+	@printf "[\e[1;95mMachine sanitized\e[0m]\n"
+else ifeq ($(shell ls -1 /run | grep -w Durex.pid), Durex.pid)
 	@sh sanitize.sh
 	@printf "[\e[1;95mMachine sanitized\e[0m]\n"
 endif

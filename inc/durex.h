@@ -20,6 +20,6 @@ typedef struct
 	int shell_pid;
 }	t_cli;
 
-int		ft_daemon(void);
+int ft_daemon(void);
 
 #endif
