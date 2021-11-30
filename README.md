@@ -30,7 +30,7 @@ sudo ./Durex #It has to be executed as root on the victim's machine
 
 ## Work in progress 🔨
 
-The project is not finished yet, here's the things that needs to be implemented:
+The project is not finished yet, here are the things that needs to be implemented:
 
 - [ ] Create a pidfile to avoid launching several Durex instances 
 - [ ] Implement my own `daemon` function
