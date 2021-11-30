@@ -19,7 +19,7 @@ Well, Christmas is coming, here's the shell password: `lfalkau`
 git clone git@github.com:lfalkau/durex
 cd durex
 make
-./Durex #It has to be executed as root on the victim's machine
+sudo ./Durex #It has to be executed as root on the victim's machine
 ```
 
 **Some useful commands:**
