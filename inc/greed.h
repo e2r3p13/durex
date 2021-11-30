@@ -13,6 +13,11 @@
 #ifndef LURE_H
 #define LURE_H
 
+#define WALL_CHR '#'
+#define PLAYER_CHR '@'
+#define MAP_H 16
+#define MAP_W 32
+
 typedef struct
 {
 	int x;
@@ -22,8 +27,8 @@ typedef struct
 typedef struct
 {
 	unsigned char **data;
-	size_t h;
-	size_t w;
+	int h;
+	int w;
 	t_coords player;
 }	t_map;
 
@@ -34,5 +39,17 @@ typedef enum
 	DOWN,
 	LEFT
 }	e_move;
+
+t_map	*map_create(int w, int h);
+void	map_generate(t_map *map);
+void	map_draw(t_map *map, int score);
+void	*map_free(t_map *map);
+
+int		can_move_up(t_map *map);
+int		can_move_down(t_map *map);
+int		can_move_left(t_map *map);
+int		can_move_right(t_map *map);
+e_move	move_get();
+int		move_perform(t_map *map, e_move move);
 
 #endif

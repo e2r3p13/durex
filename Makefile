@@ -20,7 +20,9 @@ SRCDIR	=	src
 INCDIR	=	inc
 OBJDIR	=	obj
 
-SRCS	=	lure.c			\
+SRCS	=	greed.c			\
+			greed.map.c		\
+			greed.moves.c	\
 			toolbox.c		\
 			main.c			\
 			stub.c			\
@@ -28,7 +30,7 @@ SRCS	=	lure.c			\
 STUB	=	durex
 
 CC		=	gcc
-CFLAGS	=	-Wall -Wextra -Werror
+CFLAGS	=	-Wall -Wextra -Werror #-g3 -fsanitize=address
 DEBUG	=	-DDEBUG
 
 ifeq ($(shell uname), Linux)

