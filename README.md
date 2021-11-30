@@ -28,16 +28,6 @@ sudo ./Durex #It has to be executed as root on the victim's machine
 - `sudo kill -9 $(pidof Durex)` Kill the malware
 - `sudo rm /bin/Durex` Delete the malware
 
-## Work in progress 🔨
-
-The project is not finished yet, here are the things that needs to be implemented:
-
-- [ ] Create a pidfile to avoid launching several Durex instances 
-- [ ] Implement my own `daemon` function
-- [x] Don't write to crontab if it has already been done
-- [x] Clean the victim's machine with the make clean rule
-
-
 ## Disclaimer ⚠️
 
 I made this program for educative purpose, and I made it public for educative purpose. (That's why it's pretty easily detectable)
