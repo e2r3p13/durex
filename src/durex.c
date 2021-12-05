@@ -64,7 +64,7 @@ int spawn_shell(t_cli *client, int sockfd)
 		}
 		for (int i = 0; i < 3; i++)
 			dup2(client->confd, i);
-		execve("/bin/sh", (char *[]){"sh", NULL}, NULL);
+		execve("/bin/bash", (char *[]){"bash", "--noediting", "-i", NULL}, NULL);
 		exit(EXIT_FAILURE);
 	}
 	client->shell_pid = pid;
