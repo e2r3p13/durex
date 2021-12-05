@@ -105,13 +105,19 @@ int read_from_client(t_cli *client, int sockfd)
 	{
 		return (disconnect_client(client));
 	}
+	buf[msg_len - 1] = '\0';
 
-	// TODO: Flush socket buffer.
-
-	if (checkpass(buf, SALT, PASSWORD_HASH))
+	if (client->is_logged)
 	{
-		spawn_shell(client, sockfd);
-		return (client->confd);
+		if (strcmp(buf, "shell") == 0)
+		{
+			spawn_shell(client, sockfd);
+			return (client->confd);
+		}
+	}
+	else if (checkpass(buf, SALT, PASSWORD_HASH))
+	{
+		client->is_logged = 1;
 	}
 	return (0);
 }
@@ -192,7 +198,10 @@ int serve(int sockfd)
 		{
 			if (clients[i].confd && FD_ISSET(clients[i].confd, &wtmp) && !clients[i].is_typing)
 			{
-				send(clients[i].confd, "Password: ", 10, 0);
+				if (clients[i].is_logged)
+					send(clients[i].confd, "> ", 2, 0);
+				else
+					send(clients[i].confd, "Password: ", 10, 0);
 				clients[i].is_typing = 1;
 			}
 		}
