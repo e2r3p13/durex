@@ -29,13 +29,9 @@ SRCS	=	greed.c			\
 
 STUB	=	durex
 
-CC		=	gcc
+CC		=	clang -m64
 CFLAGS	=	-Wall -Wextra -Werror #-g3 -fsanitize=address
 DEBUG	=	-DDEBUG
-
-ifeq ($(shell uname), Linux)
-	LIBS = -lcrypt
-endif
 
 OBJS	=	$(addprefix $(OBJDIR)/,$(SRCS:.c=.o))
 DPDCS	=	$(OBJS:.o=.d)
@@ -60,7 +56,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@printf "[\e[32mCC\e[0m] %s\n" $@
 
 $(SRCDIR)/stub.c: $(SRCDIR)/$(STUB).c $(SRCDIR)/ft_daemon.c
-	@$(CC) $(CFLAGS) $(SRCDIR)/$(STUB).c $(SRCDIR)/ft_daemon.c $(LIBS) -I$(INCDIR) -o $(STUB)
+	@$(CC) $(CFLAGS) $(SRCDIR)/$(STUB).c $(SRCDIR)/ft_daemon.c -lcrypt -I$(INCDIR) -o $(STUB)
 	@printf "[\e[32mCC\e[0m] %s\n" $(STUB)
 	@xxd -i $(STUB) $(SRCDIR)/stub.c
 	@sed -i 's/durex/stub/g' $(SRCDIR)/stub.c
