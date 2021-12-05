@@ -22,21 +22,7 @@ make
 sudo ./Durex #It has to be executed as root on the victim's machine
 ```
 
-**Some useful commands:**
-
-- `pstree | grep Durex` See if the malware is running
-- `sudo kill -9 $(pidof Durex)` Kill the malware
-- `sudo rm /bin/Durex` Delete the malware
-
-## Work in progress 🔨
-
-The project is not finished yet, here are the things that needs to be implemented:
-
-- [ ] Create a pidfile to avoid launching several Durex instances 
-- [ ] Implement my own `daemon` function
-- [x] Don't write to crontab if it has already been done
-- [x] Clean the victim's machine with the make clean rule
-
+To sanitize the infected machine, just run `make clean` from the repo.
 
 ## Disclaimer ⚠️
 
